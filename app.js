@@ -1,17 +1,17 @@
 var phantom = require('phantom');
 
 var express = require('express');
-var app = require('express').createServer();
-var random = require('./lib/random').randomString;
-var im = require('imagemagick');
+var app     = require('express').createServer();
+var random  = require('./lib/random').randomString;
+var im      = require('imagemagick');
 
 app.configure(function(){
-    app.use(express.methodOverride());
+  app.use(express.methodOverride());
 });
 
 app.configure('development', function(){
-    app.use(express.static(__dirname + '/public'));
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+  app.use(express.static(__dirname + '/public'));
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 app.configure('production', function(){
