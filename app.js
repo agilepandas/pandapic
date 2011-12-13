@@ -29,40 +29,41 @@ app.get('/api/1.0/export/:format', function(req, res, next) {
             console.log("Error");
             res.send({success: false, message: 'Page not found'});
           } else {
-            setTimeout(function() {
-              var fileName = random(64) + '.' + req.params.format;
-              var output = __dirname + "/public/images/" + fileName;
+            var fileName = random(64) + '.' + req.params.format;
+            var output = __dirname + "/public/images/" + fileName;
+            console.log(output);
 
-              page.render(output);
-              if(req.query.size) {
-                var split = req.query.size.split("x");
+            page.render(output);
 
-                if(split.length > 1) {
-                  var size = {};
+            if(req.query.size) {
+              var split = req.query.size.split("x");
 
-                  size.width = parseInt(split[0]);
-                  size.height = parseInt(split[1]);
+              if(split.length > 1) {
+                var size = {};
 
-                  im.resize({
-                    srcPath: output,
-                    dstPath: output,
-                    width: size.width,
-                    height: size.height
-                  }, function(err,stdout,stderr){
-                    if(err)
-                      console.log("error");
-                    else
-                      console.log(size);
-                  });
-                }
+                size.width = parseInt(split[0]);
+                size.height = parseInt(split[1]);
+                var Fs = require('fs');
+                console.log(Fs.lstatSync(output));
+                im.resize({
+                  srcPath: output,
+                  dstPath: output,
+                  width: size.width,
+                  height: size.height
+                }, function(err,stdout,stderr){
+                  if(err)
+                    console.log(err);
+                  else
+                    console.log(size);
+                });
               }
-              ph.exit();
+            }
+            ph.exit();
 
-              res.send({
-                success: true,
-                path: 'http://' + req.headers.host + '/images/'+fileName
-              });
-            }, 200);
+            res.send({
+              success: true,
+              path: 'http://' + req.headers.host + '/images/'+fileName
+            });
           }
         });
       });
