@@ -5,6 +5,21 @@ var app     = require('express').createServer();
 var random  = require('./lib/random').randomString;
 var im      = require('imagemagick');
 
+function dumpError(err) {
+  if (typeof err === 'object') {
+    if (err.message) {
+      console.log('\nMessage: ' + err.message)
+    }
+    if (err.stack) {
+      console.log('\nStacktrace:')
+      console.log('====================')
+      console.log(err.stack);
+    }
+  } else {
+    console.log('dumpError :: argument is not an object');
+  }
+}
+
 app.configure(function(){
   app.use(express.methodOverride());
 });
@@ -26,7 +41,7 @@ app.get('/api/1.0/export/:format', function(req, res, next) {
       ph.createPage(function(page) {
         page.open(req.query.page, function(status) {
           if(status !== 'success') {
-            console.log("Error");
+            console.log("Error, page not found.");
             res.send({success: false, message: 'Page not found'});
           } else {
             var fileName = random(64) + '.' + req.params.format;
@@ -59,7 +74,14 @@ app.get('/api/1.0/export/:format', function(req, res, next) {
               }
             }
             ph.exit();
-
+            try {
+               res.send({
+                success: true,
+                path: 'http://' + req.headers.host + '/images/'+fileName
+              });
+            } catch(err) {
+              dumpError(err);
+            }
             res.send({
               success: true,
               path: 'http://' + req.headers.host + '/images/'+fileName
