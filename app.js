@@ -87,6 +87,7 @@ app.get('/api/1.0/export/:format', function(req, res, next) {
               });
             } catch(err) {
               dumpError(err);
+              res.send({success: false, message: "Unknown error"});
             }
           }
         });
