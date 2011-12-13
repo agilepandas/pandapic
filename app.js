@@ -50,36 +50,35 @@ app.get('/api/1.0/export/:format', function(req, res, next) {
 
             page.render(output);
 
-            // try {
-            //   if(req.query.size) {
-            //     var split = req.query.size.split("x");
+            try {
+              if(req.query.size) {
+                var split = req.query.size.split("x");
 
-            //     if(split.length > 1) {
-            //       var size = {};
+                if(split.length > 1) {
+                  var size = {};
 
-            //       size.width = parseInt(split[0]);
-            //       size.height = parseInt(split[1]);
-            //       var Fs = require('fs');
-            //       console.log(Fs.lstatSync(output));
-            //       im.resize({
-            //         srcPath: output,
-            //         dstPath: output,
-            //         width: size.width,
-            //         height: size.height
-            //       }, function(err,stdout,stderr){
-            //         if(err)
-            //           console.log(err);
-            //         else
-            //           console.log(size);
-            //       });
-            //     }
-            //   }
-            // } catch(err) {
-            //   console.log("Image magic failed resizing image: "+fileName);
-            // } finally {
-            //   ph.exit();
-            // }
-            ph.exit();
+                  size.width = parseInt(split[0]);
+                  size.height = parseInt(split[1]);
+                  var Fs = require('fs');
+                  console.log(Fs.lstatSync(output));
+                  im.resize({
+                    srcPath: output,
+                    dstPath: output,
+                    width: size.width,
+                    height: size.height
+                  }, function(err,stdout,stderr){
+                    if(err)
+                      console.log(err);
+                    else
+                      console.log(size);
+                  });
+                }
+              }
+            } catch(err) {
+              console.log("Image magic failed resizing image: "+fileName);
+            } finally {
+              ph.exit();
+            }
 
             try {
                res.send({
